@@ -1,27 +1,84 @@
+ import java.util.Scanner; 
  class Main {
   public static void main(String[] args) {
     displayInstruction();
-    int squaresPerSide=9;
-    squaresPerSide+=1;
-    char[] board = new char[(squaresPerSide)*(squaresPerSide)];
-    setBoard(board,squaresPerSide);
-    displayBoard(board, squaresPerSide);
+    int level = 1;
+    char[] board = new char[(level+2)*(level+2)];
+    setBoard(board,level+2);
+    displayBoard(board, level+2);  
 
-    //Scanner sc= new Scanner(System.in);
-    //System.out.println("");
+    runGame(board, level);
 
   }
+
+  public static boolean completeBoard(char[] board,int level){
+    char boardSymbol = board[level+3];
+    for(int i = level+4; i < board.length; i++){
+      if(board[i]!=boardSymbol && i%(level+2)!=0)
+        return false;
+    }
+    return true;
+  }
+
+  public static void flip(int row, int column, char[] board, int level){
+    int index = row*(level+2)+column;
+    flipHelper(board, index);
+
+       //upper
+       if(row!=1){
+          flipHelper(board, index-level-2);
+       }
+       if(row!=level+1)
+          flipHelper(board, index+level+2);
+       if(column!=1)
+           flipHelper(board, index-1);
+       if(column!=level+1)
+           flipHelper(board, index+1);
+  }
+
+  public static void flipHelper(char[] board, int index){
+     if(board[index]=='X')
+         board[index] = 'O';
+      else
+       board[index] = 'X';
+  }
+  
+  public static void runGame(char[] board, int level){
+    int row,column;
+    Scanner sc= new Scanner(System.in);
+
+    while(!completeBoard(board,level)){
+      System.out.print("Which tile to flip? ");
+       row = sc.nextInt(); 
+       column = sc.nextInt();
+       System.out.println();
+
+      if(row-1>level || row < 1 || column-1 > level || column < 1){
+        System.out.println("Invalid move. Try again \n");
+        displayBoard(board, level+2);  
+        continue;
+      }
+
+       System.out.println();
+
+       flip(row,column, board, level);
+       displayBoard(board, level+2);  
+
+    }
+  }
+
   public static void displayInstruction(){
-      System.out.println("Thank you for playing flip! To objective of the game is to have the whole board be all X's or O's. When you flip a tile, the tiles directly above, below, left, and right of it also flip. Good Luck!");
+      System.out.println("Thank you for playing flip! The objective of the game is to have the whole board be all X's or O's. When you flip a tile, the tiles directly above, below, left, and right of it also flip. You input which tile to flip in a row column format. Good Luck!");
+      System.out.println();
   }
 
   public static char setRandomPiece()
   {
       // Randomly choose a piece to be placed (2 or 4)
       char pieceToPlace = 'X';
-      if( Math.random()*2%2 < 1) {
+      if( Math.random()*2%2 < 1) 
           pieceToPlace = 'O';
-      }
+      
       return pieceToPlace;
   }
 
@@ -34,11 +91,22 @@
         else
             board[i] = setRandomPiece();
       }
+      if(completeBoard(board,squaresPerSide-2)){
+        int rand = (int) (Math.random()*board.length);
+        while(rand<squaresPerSide || rand%squaresPerSide==0){
+          rand = (int)(Math.random()*board.length);
+        }
+        if(board[rand]=='O')
+          board[rand] = 'X';
+        else
+          board[rand] = 'O';
+      }
+        
 
   }
 
   public static void displayBoard(char board[], int squaresPerSide){
-
+    int level = squaresPerSide-2;
     for(int i = 0; i<squaresPerSide;i++){
       for(int j = 0; j < squaresPerSide; j++){
         System.out.print(board[i*squaresPerSide+j]+" ");
@@ -46,5 +114,7 @@
       System.out.println("");
     }
 
+    System.out.println("\nLevel: " + level + "\n");
   }
+
 }  
