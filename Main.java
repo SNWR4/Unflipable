@@ -3,7 +3,7 @@
   public static void main(String[] args) {
     displayInstruction();
     int level = 1;
-    char[] board = new char[(level+2)*(level+2)];
+    char[] board = new char[100];
     setBoard(board,level+2);
     displayBoard(board, level+2);  
 
@@ -13,7 +13,7 @@
 
   public static boolean completeBoard(char[] board,int level){
     char boardSymbol = board[level+3];
-    for(int i = level+4; i < board.length; i++){
+    for(int i = level+4; i < (level+2)*(level+2); i++){
       if(board[i]!=boardSymbol && i%(level+2)!=0)
         return false;
     }
@@ -47,24 +47,32 @@
     int row,column;
     Scanner sc= new Scanner(System.in);
 
-    while(!completeBoard(board,level)){
-      System.out.print("Which tile to flip? ");
-       row = sc.nextInt(); 
-       column = sc.nextInt();
-       System.out.println();
+    while(level<9){
+      while(!completeBoard(board,level)){
+        System.out.print("Which tile to flip? ");
+        row = sc.nextInt(); 
+        column = sc.nextInt();
+        System.out.println();
 
-      if(row-1>level || row < 1 || column-1 > level || column < 1){
-        System.out.println("Invalid move. Try again \n");
+        if(row-1>level || row < 1 || column-1 > level || column < 1){
+          System.out.println("Invalid move. Try again \n");
+          displayBoard(board, level+2);  
+          continue;
+        }
+
+        System.out.println();
+
+        flip(row,column, board, level);
         displayBoard(board, level+2);  
-        continue;
+
       }
-
-       System.out.println();
-
-       flip(row,column, board, level);
-       displayBoard(board, level+2);  
-
+      System.out.println("Good job! You beat level " +  level + "! Now onto the next level!\n");
+      level++;
+      setBoard(board, level+2);
+      displayBoard(board, level+2);
     }
+
+    System.out.println("Congratz! You beat all the levels! Guess it wasn't unflipable after all!");
   }
 
   public static void displayInstruction(){
@@ -83,7 +91,8 @@
   }
 
   public static void setBoard(char board[], int squaresPerSide){
-      for(int i = 0; i < board.length;i++){
+      int currentDim = squaresPerSide*squaresPerSide;
+      for(int i = 0; i < currentDim;i++){
         if(i<squaresPerSide)
            board[i] = (char)(i+48);
         else if(i%(squaresPerSide)==0)
@@ -92,9 +101,9 @@
             board[i] = setRandomPiece();
       }
       if(completeBoard(board,squaresPerSide-2)){
-        int rand = (int) (Math.random()*board.length);
+        int rand = (int) (Math.random()*currentDim);
         while(rand<squaresPerSide || rand%squaresPerSide==0){
-          rand = (int)(Math.random()*board.length);
+          rand = (int)(Math.random()*currentDim);
         }
         if(board[rand]=='O')
           board[rand] = 'X';
