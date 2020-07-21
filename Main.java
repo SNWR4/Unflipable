@@ -4,7 +4,7 @@
     displayInstruction();
     int level = 1;
     char[] board = new char[100];
-    int cap = 4;
+    int cap = 9;
     setBoard(board,level+2);
     displayBoard(board, level+2);  
 
@@ -100,7 +100,7 @@
   }
 
   public static void displayInstruction(){
-      System.out.println("Thank you for playing flip! The objective of the game is to have the whole board be all X's or O's. When you flip a tile, the tiles directly above, below, left, and right of it also flip. You input which tile to flip in a row column format. Good Luck!");
+      System.out.println("Thank you for playing flip! The objective of the game is to have the whole board be all X's or O's. When you flip a tile, the tiles directly above, below, left, and right of it also flip. You input which tile to flip in a row column format. (Example: row column) The game will always assume 2 inputs of row and column. If either of them is an 's' the board will scramble. If either of them is a 'q' the game will quit. Good Luck!");
       System.out.println();
   }
 
