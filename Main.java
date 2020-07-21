@@ -4,10 +4,11 @@
     displayInstruction();
     int level = 1;
     char[] board = new char[100];
+    int cap = 4;
     setBoard(board,level+2);
     displayBoard(board, level+2);  
 
-    runGame(board, level);
+    runGame(board, level, cap);
 
   }
 
@@ -43,33 +44,56 @@
        board[index] = 'X';
   }
   
-  public static void runGame(char[] board, int level){
+  public static boolean decipherInput(String input1,String input2, char[] board, int level){
+    if(input1.charAt(0)=='q' || input1.charAt(0)=='Q' ||input2.charAt(0)=='q' || input2.charAt(0)=='Q' ){
+      System.out.println("You've quit the game. Guess it was unflippable after all!");
+      return true;
+    }
+    else if (input1.charAt(0) == 'S' || input1.charAt(0) == 's'|| input2.charAt(0) == 'S' || input2.charAt(0) == 's'){
+              System.out.println("Scrambling the board.\n");
+              setBoard(board, level+2);
+    }
+    else if(input1.charAt(0)<58 && input1.charAt(0)>47 && input2.charAt(0)<58 && input2.charAt(0)>47 ){
+      int row = input1.charAt(0)-48;
+      int column = input2.charAt(0)-48;
+      if(row-1>level || row < 1 || column-1 > level || column < 1){
+              System.out.println("Invalid dimensions. Try again");
+      }
+      else
+       flip(row,column, board, level);
+        
+      
+    }
+    else{
+      System.out.println("Invalid input. Try again");
+    }
+
+    return false;
+
+  }
+  public static void runGame(char[] board, int level, int cap){
     int row,column;
+    int tokenCount = 2;
+    int count = 0;
+    String input1,input2;
     Scanner sc= new Scanner(System.in);
 
-    while(level<9){
+    while(level<cap){
       while(!completeBoard(board,level)){
         System.out.print("Which tile to flip? ");
-        row = sc.nextInt(); 
-        column = sc.nextInt();
+        input1 = sc.next();
+        input2 = sc.next();
+        if(decipherInput(input1,input2, board, level))
+            return;
         System.out.println();
-
-        if(row-1>level || row < 1 || column-1 > level || column < 1){
-          System.out.println("Invalid move. Try again \n");
-          displayBoard(board, level+2);  
-          continue;
-        }
-
-        System.out.println();
-
-        flip(row,column, board, level);
         displayBoard(board, level+2);  
-
       }
       System.out.println("Good job! You beat level " +  level + "! Now onto the next level!\n");
       level++;
-      setBoard(board, level+2);
-      displayBoard(board, level+2);
+      if(level!=cap){
+        setBoard(board, level+2);
+        displayBoard(board, level+2);
+      }
     }
 
     System.out.println("Congratz! You beat all the levels! Guess it wasn't unflipable after all!");
