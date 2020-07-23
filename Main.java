@@ -71,6 +71,20 @@
     return false;
 
   }
+
+  public static int decipherInputSingle(String input1, char[] board, int level){
+    if(input1.charAt(0)=='q' || input1.charAt(0)=='Q'){
+      System.out.println("You've quit the game. Guess it was unflippable after all!");
+      return 1;
+    }
+    else if (input1.charAt(0) == 'S' || input1.charAt(0) == 's'){
+              setBoard(board, level+2);
+              return 2;
+    }
+
+    return 0;
+
+  }
   public static void runGame(char[] board, int level, int cap){
     int row,column;
     int tokenCount = 2;
@@ -82,6 +96,15 @@
       while(!completeBoard(board,level)){
         System.out.print("Which tile to flip? ");
         input1 = sc.next();
+        if(decipherInputSingle(input1, board, level)==1)
+          return;
+        else if(decipherInputSingle(input1, board, level)==2){
+        System.out.println("Scrambling the board.");
+        System.out.println();
+        displayBoard(board, level+2); 
+          continue;
+        }
+
         input2 = sc.next();
         if(decipherInput(input1,input2, board, level))
             return;
@@ -100,7 +123,7 @@
   }
 
   public static void displayInstruction(){
-      System.out.println("Thank you for playing flip! The objective of the game is to have the whole board be all X's or O's. When you flip a tile, the tiles directly above, below, left, and right of it also flip. You input which tile to flip in a row column format. (Example: row column) The game will always assume 2 inputs of row and column. If either of them is an 's' the board will scramble. If either of them is a 'q' the game will quit. Good Luck!");
+      System.out.println("Thank you for playing flip! The objective of the game is to have the whole board be all X's or O's. When you flip a tile, the tiles directly above, below, left, and right of it also flip. You input which tile to flip in a row column format. (Example:1 2) The game will always assume 2 inputs of row and column. If either of them is an 's' the board will scramble. If either of them is a 'q' the game will quit. Good Luck!");
       System.out.println();
   }
 
